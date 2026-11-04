@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "name": "Ada Lovelace",
+    "address": { "city": "London" },
+    "orders": 3,
+    "nickname": "Ada"
+  },
+  {
+    "id": 2,
+    "name": "Grace Hopper",
+    "orders": 0,
+    "nickname": ""
+  },
+  {
+    "id": 3,
+    "name": "Alan Turing",
+    "address": {},
+    "orders": null
+  }
+]
