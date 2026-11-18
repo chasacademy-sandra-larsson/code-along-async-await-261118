@@ -8,18 +8,22 @@ const SLOW_URL = 'https://httpbin.org/delay/5'; // svarar efter fem sekunder
 let controller = null;
 
 document.querySelector('#start').addEventListener('click', async () => {
+  controller?.abort();
+  controller = new AbortController();
   status.textContent = 'Hämtar...';
   try {
-    const response = await fetch(SLOW_URL);
+    const response = await fetch(SLOW_URL, { signal: controller.signal });
     await response.json();
     status.textContent = 'Klart!';
   } catch (error) {
-    status.textContent = `Fel: ${error.message}`;
+
+    status.textContent = error.name === "AbortError" ? "Avbrytet" : `Fel ${error.message}`;
   }
 });
 
 document.querySelector('#cancel').addEventListener('click', () => {
   // TODO
+  controller?.abort();
 });
 
 // 2. AbortController
@@ -33,3 +37,21 @@ document.querySelector('#cancel').addEventListener('click', () => {
 // 4. Timeout utan egen kod
 // TODO: Prova { signal: AbortSignal.timeout(2000) } i ett eget fetch-anrop mot SLOW_URL.
 //       Vad heter felet nu?
+
+const fetchWithTimeout = async (ms) => {
+  try {
+     await fetch(SLOW_URL, { signal: AbortSignal.timeout(ms)}) 
+     console.log("hämtat")
+  } catch(error) {
+    if (error.name === "TimeoutError") {
+    console.error("Anropet tog för lång tid");
+  } else if (error.name === "AbortError") {
+    console.error("Anropet avbröts");
+  } else {
+    throw error;
+  }
+  }
+}
+
+
+fetchWithTimeout(2000);
